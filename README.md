@@ -12,6 +12,8 @@ A very simple HTTP file server
 ```shell
 > cd root/of/project/you/want/to/serve
 > serveit
+
+Serving root "root/of/project/you/want/to/serve" on port :8080
 ```
 
 ## Build it from source
