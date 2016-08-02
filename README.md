@@ -16,6 +16,13 @@ A very simple HTTP file server
 Serving root "root/of/project/you/want/to/serve" on port :8080
 ```
 
+Serving on a custom port...
+```shell
+> serveit --port=7070
+
+Serving root "root/of/project/you/want/to/serve" on port :7070
+```
+
 ## Build it from source
 
 ```shell
