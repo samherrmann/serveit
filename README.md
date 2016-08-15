@@ -12,16 +12,20 @@ A very simple HTTP file server
 ```shell
 > cd root/of/project/you/want/to/serve
 > serveit
-
-Serving root "root/of/project/you/want/to/serve" on port :8080
+Serving current directory on port :8080
 ```
 
 Serving on a custom port...
 ```shell
-> serveit --port=7070
-
-Serving root "root/of/project/you/want/to/serve" on port :7070
+> serveit -port=7070
+Serving current directory on port :7070
 ```
+
+Serving Angular applications with client-side routing...
+```shell
+> serveit -ar
+```
+Setting the `-ar` flag (short for "Angular routing") will cause all requests for which no file or directory exists to be redirected to the root.
 
 ## Build it from source
 
