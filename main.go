@@ -6,11 +6,13 @@ import (
 	"net/http"
 	"os"
 	"strconv"
+	"strings"
 )
 
 var (
 	port               *int
 	isAngularRoutingOn *bool
+	apiRoot            *string
 )
 
 func main() {
@@ -24,12 +26,22 @@ func serveFile(w http.ResponseWriter, r *http.Request) {
 		http.ServeFile(w, r, ".")
 		return
 	}
-	http.ServeFile(w, r, r.URL.Path[1:])
+
+	http.ServeFile(w, r, getPath(r))
+}
+
+func getPath(r *http.Request) string {
+	path := r.URL.Path[1:]
+	if *apiRoot != "" && strings.HasPrefix(path, *apiRoot+"/") && r.URL.RawQuery != "" {
+		path += "/" + r.URL.RawQuery + ".json"
+	}
+	return path
 }
 
 func parseFlags() {
 	port = flag.Int("port", 8080, "The port on which to serve the current directory.")
 	isAngularRoutingOn = flag.Bool("ar", false, "Angular routing: If set, requests for which no file or directory exists are redirected to the root.")
+	apiRoot = flag.String("api", "", "The root of a mock API folder")
 	flag.Parse()
 }
 
