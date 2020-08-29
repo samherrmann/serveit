@@ -27,7 +27,15 @@ Serving Angular applications with client-side routing...
 ```
 Setting the `-ar` flag (short for "Angular routing") will cause all requests for which no file or directory exists to be redirected to the root.
 
-## Build it from source
+## Developing
+
+### Required Tools
+
+* [Go](https://golang.org/)
+* Text editor (Recommended: [VSCode](https://code.visualstudio.com/) with 
+   [Go extension](https://marketplace.visualstudio.com/items?itemName=golang.Go))
+
+### Build it from source
 
 ```shell
 > clone https://github.com/samherrmann/serveit.git
