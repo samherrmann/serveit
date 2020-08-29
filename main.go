@@ -9,8 +9,8 @@ import (
 )
 
 var (
-	port               *int
-	isAngularRoutingOn *bool
+	port    *int
+	spaMode *bool
 )
 
 func main() {
@@ -20,7 +20,7 @@ func main() {
 }
 
 func serveFile(w http.ResponseWriter, r *http.Request) {
-	if !doesPathExist(r) && *isAngularRoutingOn {
+	if !doesPathExist(r) && *spaMode {
 		http.ServeFile(w, r, ".")
 		return
 	}
@@ -28,8 +28,16 @@ func serveFile(w http.ResponseWriter, r *http.Request) {
 }
 
 func parseFlags() {
-	port = flag.Int("port", 8080, "The port on which to serve the current directory.")
-	isAngularRoutingOn = flag.Bool("ar", false, "Angular routing: If set, requests for which no file or directory exists are redirected to the root.")
+	port = flag.Int(
+		"port",
+		8080,
+		"The port on which to serve the current directory.",
+	)
+	spaMode = flag.Bool(
+		"spa",
+		false,
+		"Single-page application mode: If set, requests for which no file or directory exists are redirected to index.html.",
+	)
 	flag.Parse()
 }
 
