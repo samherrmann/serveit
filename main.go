@@ -1,44 +1,31 @@
 package main
 
 import (
-	"flag"
 	"fmt"
 	"net/http"
 	"os"
 	"strconv"
 )
 
-var (
-	port    *int
-	spaMode *bool
-)
-
 func main() {
-	parseFlags()
-	http.HandleFunc("/", serveFile)
-	listenAndServe()
+	// Get command-line arguments without program name
+	args := os.Args[1:]
+	// Parse command-line flags into a configuration object
+	config := parseFlags(args)
+	// Register file handler
+	http.HandleFunc("/", fileHandler(config.SPAMode))
+	// Start HTTP server
+	listenAndServe(config.Port)
 }
 
-func serveFile(w http.ResponseWriter, r *http.Request) {
-	if !doesPathExist(r) && *spaMode {
-		http.ServeFile(w, r, ".")
-		return
+func fileHandler(spaMode bool) func(http.ResponseWriter, *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+		if !doesPathExist(r) && spaMode {
+			http.ServeFile(w, r, ".")
+			return
+		}
+		http.ServeFile(w, r, r.URL.Path[1:])
 	}
-	http.ServeFile(w, r, r.URL.Path[1:])
-}
-
-func parseFlags() {
-	port = flag.Int(
-		"port",
-		8080,
-		"The port on which to serve the current directory.",
-	)
-	spaMode = flag.Bool(
-		"spa",
-		false,
-		"Single-page application mode: If set, requests for which no file or directory exists are redirected to index.html.",
-	)
-	flag.Parse()
 }
 
 func doesPathExist(r *http.Request) bool {
@@ -46,8 +33,8 @@ func doesPathExist(r *http.Request) bool {
 	return err == nil
 }
 
-func listenAndServe() {
-	addr := ":" + strconv.Itoa(*port)
+func listenAndServe(port int) {
+	addr := ":" + strconv.Itoa(port)
 	fmt.Println("Serving current directory on port " + addr)
 	panic(http.ListenAndServe(addr, nil))
 }
