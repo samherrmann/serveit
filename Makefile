@@ -7,6 +7,9 @@ build:
 	export GOOS=windows; export GOARCH=amd64; $(gobuild)
 	export GOOS=windows; export GOARCH=386; $(gobuild) 
 
+test:
+	go test ./...
+
 clean:
 	rm -rf dist
 
