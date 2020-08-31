@@ -1,11 +1,13 @@
 
 gobuild = mkdir -p dist/$$GOOS-$$GOARCH && go build -o dist/$$GOOS-$$GOARCH
+tar = (cd dist && tar -czvf $$GOOS-$$GOARCH.tar.gz $$GOOS-$$GOARCH/*)
+zip = (cd dist && zip -r $$GOOS-$$GOARCH.zip $$GOOS-$$GOARCH/*)
 
 build: 
-	export GOOS=linux; export GOARCH=386; $(gobuild)
-	export GOOS=linux; export GOARCH=amd64; $(gobuild)
-	export GOOS=windows; export GOARCH=amd64; $(gobuild)
-	export GOOS=windows; export GOARCH=386; $(gobuild) 
+	export GOOS=linux; export GOARCH=386; $(gobuild) && $(tar)
+	export GOOS=linux; export GOARCH=amd64; $(gobuild) && $(tar)
+	export GOOS=windows; export GOARCH=amd64; $(gobuild) && $(zip)
+	export GOOS=windows; export GOARCH=386; $(gobuild) && $(zip)
 
 test:
 	go test ./...
