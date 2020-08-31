@@ -21,11 +21,11 @@ Serving on a custom port...
 Serving current directory on port :7070
 ```
 
-Serving Angular applications with client-side routing...
+Serving single-page applications (SPA) with client-side routing...
 ```shell
-> serveit -ar
+> serveit -spa
 ```
-Setting the `-ar` flag (short for "Angular routing") will cause all requests for which no file or directory exists to be redirected to the root.
+Setting the `-spa` flag causes all requests for which no file or directory exists to be redirected to the root (i.e. `index.html`).
 
 ## Developing
 
