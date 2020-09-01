@@ -1,4 +1,4 @@
-package main
+package flag
 
 // Config contains the application configuration.
 type Config struct {

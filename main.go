@@ -5,13 +5,13 @@ import (
 	"net/http"
 	"os"
 	"strconv"
+
+	"github.com/samherrmann/serveit/flag"
 )
 
 func main() {
-	// Get command-line arguments without program name
-	args := os.Args[1:]
 	// Parse command-line flags into a configuration object
-	config := parseFlags(args)
+	config := flag.Parse()
 	// Register file handler
 	http.HandleFunc("/", fileHandler(config.SPAMode))
 	// Start HTTP server
