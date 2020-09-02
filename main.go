@@ -13,15 +13,15 @@ func main() {
 	// Parse command-line flags into a configuration object
 	config := flag.Parse()
 	// Register file handler
-	http.HandleFunc("/", fileHandler(config.SPAMode))
+	http.HandleFunc("/", fileHandler(config.NotFoundFile))
 	// Start HTTP server
 	listenAndServe(config.Port)
 }
 
-func fileHandler(spaMode bool) func(http.ResponseWriter, *http.Request) {
+func fileHandler(notFoundFile string) func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
-		if !doesPathExist(r) && spaMode {
-			http.ServeFile(w, r, ".")
+		if !doesPathExist(r) && notFoundFile != "" {
+			http.ServeFile(w, r, notFoundFile)
 			return
 		}
 		http.ServeFile(w, r, r.URL.Path[1:])

@@ -4,6 +4,6 @@ package flag
 type Config struct {
 	// Port number to listen on.
 	Port int
-	// Enable single-page application mode if true. Disable otherwise.
-	SPAMode bool
+	// The path of the file to serve when the requested resource cannot be found.
+	NotFoundFile string
 }

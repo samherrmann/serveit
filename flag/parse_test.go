@@ -21,13 +21,13 @@ func TestParse(t *testing.T) {
 		{
 			Args: []string{},
 			Expect: &Expect{
-				Config: &Config{Port: 8080, SPAMode: false},
+				Config: &Config{Port: 8080, NotFoundFile: ""},
 				Err:    nil,
 			},
 		}, {
 			Args: []string{"-port", "3000"},
 			Expect: &Expect{
-				Config: &Config{Port: 3000, SPAMode: false},
+				Config: &Config{Port: 3000, NotFoundFile: ""},
 				Err:    nil,
 			},
 		}, {
@@ -37,27 +37,27 @@ func TestParse(t *testing.T) {
 				Err:    errors.New(""),
 			},
 		}, {
-			Args: []string{"-spa"},
+			Args: []string{"-not-found-file"},
 			Expect: &Expect{
-				Config: &Config{Port: 8080, SPAMode: true},
+				Config: nil,
+				Err:    errors.New(""),
+			},
+		}, {
+			Args: []string{"-not-found-file", "404.html"},
+			Expect: &Expect{
+				Config: &Config{Port: 8080, NotFoundFile: "404.html"},
 				Err:    nil,
 			},
 		}, {
-			Args: []string{"-spa", "true"},
+			Args: []string{"-not-found-file", "foo"},
 			Expect: &Expect{
-				Config: &Config{Port: 8080, SPAMode: true},
+				Config: &Config{Port: 8080, NotFoundFile: "foo"},
 				Err:    nil,
 			},
 		}, {
-			Args: []string{"-spa", "foo"},
+			Args: []string{"-port", "3000", "-not-found-file", "index.html"},
 			Expect: &Expect{
-				Config: &Config{Port: 8080, SPAMode: true},
-				Err:    nil,
-			},
-		}, {
-			Args: []string{"-port", "3000", "-spa"},
-			Expect: &Expect{
-				Config: &Config{Port: 3000, SPAMode: true},
+				Config: &Config{Port: 3000, NotFoundFile: "index.html"},
 				Err:    nil,
 			},
 		},
@@ -80,7 +80,7 @@ func TestParse(t *testing.T) {
 			continue
 		}
 		// Check values against Expected values
-		if got.Port != tc.Expect.Config.Port || got.SPAMode != tc.Expect.Config.SPAMode {
+		if got.Port != tc.Expect.Config.Port || got.NotFoundFile != tc.Expect.Config.NotFoundFile {
 			t.Errorf(
 				"For arguments %+v, expected %+v, but got %+v.",
 				tc.Args,

@@ -21,11 +21,11 @@ Serving on a custom port...
 Serving current directory on port :7070
 ```
 
-Serving single-page applications (SPA) with client-side routing...
+Serving a custom file when the requested resource cannot be found...
 ```shell
-> serveit -spa
+> serveit -not-found-file=404.html
 ```
-Setting the `-spa` flag causes all requests for which no file or directory exists to be redirected to the root (i.e. `index.html`).
+For single-page applications, this flag is typically set to `index.html`.
 
 ## Developing
 

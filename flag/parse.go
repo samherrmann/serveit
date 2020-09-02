@@ -25,16 +25,17 @@ func parse(args []string) (*Config, error) {
 		8080,
 		"The port on which to serve the current directory.",
 	)
-	spaMode := flagSet.Bool(
-		"spa",
-		false,
-		"Single-page application mode: If set, requests for which no file or directory exists are redirected to index.html.",
+	notFoundFile := flagSet.String(
+		"not-found-file",
+		"",
+		"The path of the file to serve when the requested resource cannot be found. "+
+			"For single-page applications, this flag is typically set to index.html.",
 	)
 	if err := flagSet.Parse(args); err != nil {
 		return nil, err
 	}
 	return &Config{
-		Port:    *port,
-		SPAMode: *spaMode,
+		Port:         *port,
+		NotFoundFile: *notFoundFile,
 	}, nil
 }
