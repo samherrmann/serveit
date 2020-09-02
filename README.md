@@ -32,15 +32,20 @@ For single-page applications, this flag is typically set to `index.html`.
 ### Required Tools
 
 * [Go](https://golang.org/)
+* [GNU Make](https://www.gnu.org/software/make/)
 * Text editor (Recommended: [VSCode](https://code.visualstudio.com/) with 
    [Go extension](https://marketplace.visualstudio.com/items?itemName=golang.Go))
 
-### Build it from source
+### Build
 
-```shell
-> clone https://github.com/samherrmann/serveit.git
-> cd root/of/cloned/repo
-> go build
+```sh
+> make build
+```
+
+### Test
+
+```sh
+> make test
 ```
 
 
