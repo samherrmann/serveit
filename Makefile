@@ -10,7 +10,7 @@ build:
 	export GOOS=windows; export GOARCH=386; $(gobuild) && $(zip)
 
 test:
-	go test ./...
+	go test ./... -cover
 
 clean:
 	rm -rf dist
