@@ -6,17 +6,8 @@ import (
 )
 
 // Parse returns a Config object containing the values of the commnad-line
-// flags. If an error occurs while parsing the command-line flags, then the
-// program will exit with status code 2.
-func Parse() *Config {
-	config, err := parse(os.Args[1:])
-	if err != nil {
-		os.Exit(2)
-	}
-	return config
-}
-
-func parse(args []string) (*Config, error) {
+// flags. The provided arguments typically originate from os.Args[1:].
+func Parse(args []string) (*Config, error) {
 	// A custom flag set is used instead of the static one built into Go's flag
 	// package in order to make this function testable.
 	flagSet := flag.NewFlagSet(os.Args[0], flag.ContinueOnError)

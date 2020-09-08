@@ -64,7 +64,7 @@ func TestParse(t *testing.T) {
 	}
 	// Loop over all test cases
 	for _, tc := range tests {
-		got, err := parse(tc.args)
+		got, err := Parse(tc.args)
 		// Check if an error occured when no error is expected
 		if err != nil && tc.want.err == nil {
 			t.Errorf("For arguments %+v, want no error but got an error.", tc.args)
