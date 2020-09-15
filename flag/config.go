@@ -6,4 +6,6 @@ type Config struct {
 	Port int
 	// The path of the file to serve when the requested resource cannot be found.
 	NotFoundFile string
+	// When true the app will use HTTPS instead of HTTP.
+	TLS bool
 }

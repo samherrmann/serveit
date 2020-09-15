@@ -22,11 +22,17 @@ func Parse(args []string) (*Config, error) {
 		"The path of the file to serve when the requested resource cannot be found. "+
 			"For single-page applications, this flag is typically set to index.html.",
 	)
+	tls := flagSet.Bool(
+		"tls",
+		false,
+		"When true, the app is accessible over HTTPS instead of HTTP.",
+	)
 	if err := flagSet.Parse(args); err != nil {
 		return nil, err
 	}
 	return &Config{
 		Port:         *port,
 		NotFoundFile: *notFoundFile,
+		TLS:          *tls,
 	}, nil
 }
