@@ -24,7 +24,7 @@ func TestFileHandler(t *testing.T) {
 	tests := []Test{
 		{
 			notFoundFile:  "",
-			requestedFile: "/test-files/request-1.txt",
+			requestedFile: "/testdata/request-1.txt",
 			want: &Want{
 				status: http.StatusOK,
 				body:   "This file is used for testing.",
@@ -37,7 +37,7 @@ func TestFileHandler(t *testing.T) {
 				body:   "404 page not found\n",
 			},
 		}, {
-			notFoundFile:  "./test-files/custom-404.txt",
+			notFoundFile:  "./testdata/custom-404.txt",
 			requestedFile: "/some-file-that-does-not-exist.txt",
 			want: &Want{
 				status: http.StatusNotFound,
