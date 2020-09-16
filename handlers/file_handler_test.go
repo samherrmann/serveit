@@ -1,9 +1,11 @@
-package handlers
+package handlers_test
 
 import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
+
+	"github.com/samherrmann/serveit/handlers"
 )
 
 func TestFileHandler(t *testing.T) {
@@ -54,7 +56,7 @@ func TestFileHandler(t *testing.T) {
 
 		// Setup handler with response recorder
 		rr := httptest.NewRecorder()
-		handler := http.HandlerFunc(FileHandler(tc.notFoundFile))
+		handler := http.HandlerFunc(handlers.FileHandler(tc.notFoundFile))
 		handler.ServeHTTP(rr, req)
 
 		// Check the status code is what we expect.

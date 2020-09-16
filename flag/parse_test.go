@@ -1,13 +1,15 @@
-package flag
+package flag_test
 
 import (
 	"errors"
 	"testing"
+
+	"github.com/samherrmann/serveit/flag"
 )
 
 func TestParse(t *testing.T) {
 	type Want struct {
-		config *Config
+		config *flag.Config
 		err    error
 	}
 
@@ -21,13 +23,13 @@ func TestParse(t *testing.T) {
 		{
 			args: []string{},
 			want: &Want{
-				config: &Config{Port: 8080, NotFoundFile: ""},
+				config: &flag.Config{Port: 8080, NotFoundFile: ""},
 				err:    nil,
 			},
 		}, {
 			args: []string{"-port", "3000"},
 			want: &Want{
-				config: &Config{Port: 3000, NotFoundFile: ""},
+				config: &flag.Config{Port: 3000, NotFoundFile: ""},
 				err:    nil,
 			},
 		}, {
@@ -45,26 +47,26 @@ func TestParse(t *testing.T) {
 		}, {
 			args: []string{"-not-found-file", "404.html"},
 			want: &Want{
-				config: &Config{Port: 8080, NotFoundFile: "404.html"},
+				config: &flag.Config{Port: 8080, NotFoundFile: "404.html"},
 				err:    nil,
 			},
 		}, {
 			args: []string{"-not-found-file", "foo"},
 			want: &Want{
-				config: &Config{Port: 8080, NotFoundFile: "foo"},
+				config: &flag.Config{Port: 8080, NotFoundFile: "foo"},
 				err:    nil,
 			},
 		}, {
 			args: []string{"-port", "3000", "-not-found-file", "index.html"},
 			want: &Want{
-				config: &Config{Port: 3000, NotFoundFile: "index.html"},
+				config: &flag.Config{Port: 3000, NotFoundFile: "index.html"},
 				err:    nil,
 			},
 		},
 	}
 	// Loop over all test cases
 	for _, tc := range tests {
-		got, err := Parse(tc.args)
+		got, err := flag.Parse(tc.args)
 		// Check if an error occured when no error is expected
 		if err != nil && tc.want.err == nil {
 			t.Errorf("For arguments %+v, want no error but got an error.", tc.args)
