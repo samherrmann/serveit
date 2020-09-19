@@ -3,6 +3,7 @@ package flag
 import (
 	"flag"
 	"os"
+	"strings"
 )
 
 // Parse returns a Config object containing the values of the commnad-line
@@ -25,14 +26,24 @@ func Parse(args []string) (*Config, error) {
 	tls := flagSet.Bool(
 		"tls",
 		false,
-		"When true, the app is accessible over HTTPS instead of HTTP.",
+		"When true, servit automatically generates a self-signed certificate and serves "+
+			"files over HTTPS. Requires OpenSSL to be available on the system PATH.",
 	)
+	hostnames := flagSet.String(
+		"hostnames",
+		"localhost",
+		"A comma-separated list (no spaces) of hostnames to add to the server X.509 certificate. "+
+			"This flag is only applicable when the -tls flag is set.",
+	)
+
 	if err := flagSet.Parse(args); err != nil {
 		return nil, err
 	}
+
 	return &Config{
 		Port:         *port,
 		NotFoundFile: *notFoundFile,
 		TLS:          *tls,
+		Hostnames:    strings.Split(*hostnames, ","),
 	}, nil
 }

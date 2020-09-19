@@ -17,7 +17,7 @@ func TestEnsureKeyPairs(t *testing.T) {
 		t.Error(err)
 	}
 
-	if err := security.EnsureKeyPairs(); err != nil {
+	if err := security.EnsureKeyPairs([]string{"localhost"}); err != nil {
 		t.Error(err)
 	}
 

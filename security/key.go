@@ -5,7 +5,7 @@ import (
 	"os/exec"
 )
 
-// KeyFilename is the application RSA key filename.
+// KeyFilename is the server RSA key filename.
 var KeyFilename = "serveit.key"
 
 // EnsureKey creates an RSA key if it doesn't already exist.

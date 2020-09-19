@@ -17,7 +17,7 @@ func main() {
 	// Register file handler.
 	http.HandleFunc("/", handlers.FileHandler(config.NotFoundFile))
 	// Start HTTP server.
-	listenAndServe(config.Port, config.TLS)
+	listenAndServe(config.Port, config.TLS, config.Hostnames)
 }
 
 func parseFlags() *flag.Config {
@@ -29,18 +29,18 @@ func parseFlags() *flag.Config {
 	return config
 }
 
-func ensureSecrets() {
-	if err := security.EnsureKeyPairs(); err != nil {
+func ensureSecrets(hostnames []string) {
+	if err := security.EnsureKeyPairs(hostnames); err != nil {
 		log.Fatalln(err)
 	}
 }
 
-func listenAndServe(port int, tls bool) {
+func listenAndServe(port int, tls bool, hostnames []string) {
 	addr := ":" + strconv.Itoa(port)
 	log.Println("Serving current directory on port " + addr)
 	var err error
 	if tls {
-		ensureSecrets()
+		ensureSecrets(hostnames)
 		err = http.ListenAndServeTLS(addr, security.CertFilename, security.KeyFilename, nil)
 	} else {
 		err = http.ListenAndServe(addr, nil)

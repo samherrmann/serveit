@@ -12,20 +12,55 @@ A very simple HTTP file server
 ```shell
 > cd root/of/project/you/want/to/serve
 > serveit
-Serving current directory on port :8080
 ```
 
-Serving on a custom port...
+### Serving on custom port
 ```shell
 > serveit -port=7070
-Serving current directory on port :7070
 ```
 
-Serving a custom file when the requested resource cannot be found...
+### Serving custom file when requested resource cannot be found
 ```shell
 > serveit -not-found-file=404.html
 ```
 For single-page applications, this flag is typically set to `index.html`.
+
+### Serving over HTTPS
+Serveit makes it very simple to serve files over HTTPS by automatically creating
+self-signed certificates using [openssl](https://www.openssl.org/):
+
+```shell
+> serveit -tls
+```
+This command automatically generates the following files if they don't already exist:
+|                       |                                              |
+| --------------------- | -------------------------------------------- |
+| `serveit_root_ca.key` | Private key for Root Certificate Aurthority. |
+| `serveit_root_ca.crt` | Public certificate for Root Certificate Aurthority. |
+| `serveit.key`         | Private key for server. |
+| `serveit.crt`         | Public certificate for server, signed with `serveit_root_ca.key` and `serveit_root_ca.crt`. |
+
+Install `serveit_root_ca.crt` as a _Trusted Root Certificate Authority_ in your
+client device to have the browser trust the connection to serveit at
+`https://localhost:8080`.
+
+#### More HTTPS options
+Create certificate for IP address:
+```shell
+> serveit -tls -hostname 192.168.0.1
+```
+Create certificate for domain name:
+```shell
+> serveit -tls -hostname example.com
+```
+Create certificate for multiple domain names or IP addresses:
+```shell
+> serveit -tls -hostname localhost,192.168.0.1,example.com
+```
+Serve on default HTTPS port (443):
+```shell
+> serveit -tls -hostname example.com -port 443
+```
 
 ## Developing
 

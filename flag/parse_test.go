@@ -23,13 +23,13 @@ func TestParse(t *testing.T) {
 		{
 			args: []string{},
 			want: &Want{
-				config: &flag.Config{Port: 8080, NotFoundFile: "", TLS: false},
+				config: &flag.Config{Port: 8080, NotFoundFile: "", TLS: false, Hostnames: []string{"localhost"}},
 				err:    nil,
 			},
 		}, {
 			args: []string{"-port", "3000"},
 			want: &Want{
-				config: &flag.Config{Port: 3000, NotFoundFile: "", TLS: false},
+				config: &flag.Config{Port: 3000, NotFoundFile: "", TLS: false, Hostnames: []string{"localhost"}},
 				err:    nil,
 			},
 		}, {
@@ -47,31 +47,31 @@ func TestParse(t *testing.T) {
 		}, {
 			args: []string{"-not-found-file", "404.html"},
 			want: &Want{
-				config: &flag.Config{Port: 8080, NotFoundFile: "404.html", TLS: false},
+				config: &flag.Config{Port: 8080, NotFoundFile: "404.html", TLS: false, Hostnames: []string{"localhost"}},
 				err:    nil,
 			},
 		}, {
 			args: []string{"-not-found-file", "foo"},
 			want: &Want{
-				config: &flag.Config{Port: 8080, NotFoundFile: "foo", TLS: false},
+				config: &flag.Config{Port: 8080, NotFoundFile: "foo", TLS: false, Hostnames: []string{"localhost"}},
 				err:    nil,
 			},
 		}, {
 			args: []string{"-port", "3000", "-not-found-file", "index.html", "-tls"},
 			want: &Want{
-				config: &flag.Config{Port: 3000, NotFoundFile: "index.html", TLS: true},
+				config: &flag.Config{Port: 3000, NotFoundFile: "index.html", TLS: true, Hostnames: []string{"localhost"}},
 				err:    nil,
 			},
 		}, {
 			args: []string{"-tls"},
 			want: &Want{
-				config: &flag.Config{Port: 8080, NotFoundFile: "", TLS: true},
+				config: &flag.Config{Port: 8080, NotFoundFile: "", TLS: true, Hostnames: []string{"localhost"}},
 				err:    nil,
 			},
 		}, {
 			args: []string{"-tls=false"},
 			want: &Want{
-				config: &flag.Config{Port: 8080, NotFoundFile: "", TLS: false},
+				config: &flag.Config{Port: 8080, NotFoundFile: "", TLS: false, Hostnames: []string{"localhost"}},
 				err:    nil,
 			},
 		}, {
@@ -79,8 +79,32 @@ func TestParse(t *testing.T) {
 			want: &Want{
 				// Note that setting boolean flag values explicitly needs to be done in
 				// the form of "-flag=value", the form "-flag value" does not work.
-				config: &flag.Config{Port: 8080, NotFoundFile: "", TLS: true},
+				config: &flag.Config{Port: 8080, NotFoundFile: "", TLS: true, Hostnames: []string{"localhost"}},
 				err:    nil,
+			},
+		}, {
+			args: []string{"-hostnames", "example.com"},
+			want: &Want{
+				config: &flag.Config{Port: 8080, NotFoundFile: "", TLS: false, Hostnames: []string{"example.com"}},
+				err:    nil,
+			},
+		}, {
+			args: []string{"-hostnames", "localhost,example.com"},
+			want: &Want{
+				config: &flag.Config{Port: 8080, NotFoundFile: "", TLS: false, Hostnames: []string{"localhost", "example.com"}},
+				err:    nil,
+			},
+		}, {
+			args: []string{"-hostnames", "localhost,example.com,192.168.0.1"},
+			want: &Want{
+				config: &flag.Config{Port: 8080, NotFoundFile: "", TLS: false, Hostnames: []string{"localhost", "example.com", "192.168.0.1"}},
+				err:    nil,
+			},
+		}, {
+			args: []string{"-hostnames"},
+			want: &Want{
+				config: nil,
+				err:    errors.New(""),
 			},
 		},
 	}
@@ -116,5 +140,20 @@ func TestParse(t *testing.T) {
 func doValuesMatch(got *flag.Config, want *flag.Config) bool {
 	return got.Port != want.Port ||
 		got.NotFoundFile != want.NotFoundFile ||
-		got.TLS != want.TLS
+		got.TLS != want.TLS ||
+		!equal(got.Hostnames, want.Hostnames)
+}
+
+// Equal tells whether a and b contain the same elements.
+// A nil argument is equivalent to an empty slice.
+func equal(a, b []string) bool {
+	if len(a) != len(b) {
+		return false
+	}
+	for i, v := range a {
+		if v != b[i] {
+			return false
+		}
+	}
+	return true
 }

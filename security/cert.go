@@ -1,29 +1,31 @@
 package security
 
 import (
+	"fmt"
 	"io/ioutil"
+	"net"
 	"os"
 	"os/exec"
+	"strings"
 )
 
-// CertFilename is the application certificate filename.
+// CertFilename is the server certificate filename.
 var CertFilename = "serveit.crt"
 
-// CSRFilename is the application certificate signing request filename.
+// CSRFilename is the server certificate signing request filename.
 var CSRFilename = "serveit.csr"
 
-// ExtFilename is the application certificate extensions filename.
+// ExtFilename is the server certificate extensions filename.
 var ExtFilename = "serveit.ext"
 
-// EnsureCert creates an application X.509 certificate if it doesn't already
-// exist.
-func EnsureCert() error {
+// EnsureCert creates a server X.509 certificate if it doesn't already exist.
+func EnsureCert(hostnames []string) error {
 	_, err := os.Stat(CertFilename)
 	if os.IsNotExist(err) {
 		if err := createCSR(); err != nil {
 			return err
 		}
-		if err = createExtFile(); err != nil {
+		if err = createExtFile(hostnames); err != nil {
 			return err
 		}
 		return CreateCert()
@@ -31,7 +33,7 @@ func EnsureCert() error {
 	return err
 }
 
-// CreateCert creates an application X.509 certificate.
+// CreateCert creates a server X.509 certificate.
 func CreateCert() error {
 	cmd := exec.Command(
 		"openssl", "x509",
@@ -64,14 +66,31 @@ func createCSR() error {
 }
 
 // createExtFile creates a certificate extensions file.
-func createExtFile() error {
-	content := []byte(
+func createExtFile(hostnames []string) error {
+	dns := []string{}
+	ips := []string{}
+
+	for _, hostname := range hostnames {
+		parsed := net.ParseIP(hostname)
+		if parsed != nil {
+			l := len(ips)
+			ips = append(ips, fmt.Sprintf("IP.%v = %v", l+1, hostname))
+		} else {
+			l := len(dns)
+			dns = append(dns, fmt.Sprintf("DNS.%v = %v", l+1, hostname))
+		}
+	}
+
+	content := string(
 		"authorityKeyIdentifier=keyid,issuer\n" +
 			"basicConstraints=CA:FALSE\n" +
 			"keyUsage = digitalSignature, nonRepudiation, keyEncipherment, dataEncipherment\n" +
 			"subjectAltName = @alt_names\n" +
-			"[alt_names]\n" +
-			"DNS.1 = localhost\n",
+			"[alt_names]\n",
 	)
-	return ioutil.WriteFile(ExtFilename, content, 0644)
+
+	content += (strings.Join(dns, "\n") + "\n")
+	content += (strings.Join(ips, "\n") + "\n")
+
+	return ioutil.WriteFile(ExtFilename, []byte(content), 0644)
 }
