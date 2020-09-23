@@ -1,7 +1,6 @@
 package security
 
 import (
-	"os"
 	"os/exec"
 )
 
@@ -15,16 +14,19 @@ var RootCACertSerialFilename = fileRootname + ".srl"
 
 // EnsureRootCACert creates a certificate authority (CA) X.509 certificate if it
 // doesn't already exist.
-func EnsureRootCACert() error {
-	_, err := os.Stat(RootCACertFilename)
-	if os.IsNotExist(err) {
-		return CreateRootCACert()
+func EnsureRootCACert(dir string) error {
+	exists, err := fileExists(dir, RootCACertFilename)
+	if err != nil {
+		return err
 	}
-	return err
+	if !exists {
+		return CreateRootCACert(dir)
+	}
+	return nil
 }
 
 // CreateRootCACert creates a certificate authority (CA) X.509 certificate.
-func CreateRootCACert() error {
+func CreateRootCACert(dir string) error {
 	cmd := exec.Command(
 		"openssl", "req",
 		"-x509",
@@ -37,6 +39,7 @@ func CreateRootCACert() error {
 		"-subj", `/C=CA/ST=Ontario/L=Ottawa/O=samherrmann/CN=Serveit Root Certificate Authority`,
 		"-out", RootCACertFilename,
 	)
+	cmd.Dir = dir
 	_, err := cmd.CombinedOutput()
 	return err
 }

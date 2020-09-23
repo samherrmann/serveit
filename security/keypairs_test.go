@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"path/filepath"
 	"strings"
 	"testing"
 
@@ -12,56 +13,60 @@ import (
 )
 
 func TestEnsureKeyPairs(t *testing.T) {
+	dir := "testdata"
+
 	// Start with a clean slate.
-	if err := removeAllFiles(); err != nil {
+	if err := removeAllFiles(dir); err != nil {
 		t.Error(err)
 	}
 
-	if err := security.EnsureKeyPairs([]string{"localhost"}); err != nil {
+	if err := security.EnsureKeyPairs(dir, []string{"localhost"}); err != nil {
 		t.Error(err)
 	}
 
-	if err := verifyKey(security.RootCAKeyFilename); err != nil {
+	if err := verifyKey(dir, security.RootCAKeyFilename); err != nil {
 		t.Error(err)
 	}
 
-	if err := verifyCert(security.RootCACertFilename); err != nil {
+	if err := verifyCert(dir, security.RootCACertFilename); err != nil {
 		t.Error(err)
 	}
 
-	if err := verifyKey(security.KeyFilename); err != nil {
+	if err := verifyKey(dir, security.KeyFilename); err != nil {
 		t.Error(err)
 	}
 
-	if err := verifyCert(security.CertFilename); err != nil {
+	if err := verifyCert(dir, security.CertFilename); err != nil {
 		t.Error(err)
 	}
 
 	// Clean up.
-	if err := removeAllFiles(); err != nil {
+	if err := removeAllFiles(dir); err != nil {
 		t.Error(err)
 	}
 }
 
-func verifyKey(filename string) error {
+func verifyKey(dir, filename string) error {
 	return verifyFileContent(
+		dir,
 		filename,
 		"-----BEGIN RSA PRIVATE KEY-----",
 		"-----END RSA PRIVATE KEY-----",
 	)
 }
 
-func verifyCert(filename string) error {
+func verifyCert(dir, filename string) error {
 	return verifyFileContent(
+		dir,
 		filename,
 		"-----BEGIN CERTIFICATE-----",
 		"-----END CERTIFICATE-----",
 	)
 }
 
-func verifyFileContent(filename string, prefix string, suffix string) error {
+func verifyFileContent(dir, filename, prefix, suffix string) error {
 	// Read content from file.
-	content, err := ioutil.ReadFile(filename)
+	content, err := ioutil.ReadFile(filepath.Join(dir, filename))
 	if err != nil {
 		return fmt.Errorf("Error reading %v: %v", filename, err)
 	}
@@ -75,7 +80,7 @@ func verifyFileContent(filename string, prefix string, suffix string) error {
 	return nil
 }
 
-func removeAllFiles() error {
+func removeAllFiles(dir string) error {
 	files := []string{
 		security.RootCAKeyFilename,
 		security.RootCACertFilename,
@@ -87,7 +92,7 @@ func removeAllFiles() error {
 	}
 
 	for _, file := range files {
-		if err := os.Remove(file); err != nil && !errors.Is(err, os.ErrNotExist) {
+		if err := os.Remove(filepath.Join(dir, file)); err != nil && !errors.Is(err, os.ErrNotExist) {
 			return fmt.Errorf("Error removing %v: %w", file, err)
 		}
 	}

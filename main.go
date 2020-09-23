@@ -4,8 +4,10 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"path/filepath"
 	"strconv"
 
+	"github.com/samherrmann/serveit/execpath"
 	"github.com/samherrmann/serveit/flag"
 	"github.com/samherrmann/serveit/handlers"
 	"github.com/samherrmann/serveit/security"
@@ -29,8 +31,8 @@ func parseFlags() *flag.Config {
 	return config
 }
 
-func ensureSecrets(hostnames []string) {
-	if err := security.EnsureKeyPairs(hostnames); err != nil {
+func ensureSecrets(dir string, hostnames []string) {
+	if err := security.EnsureKeyPairs(dir, hostnames); err != nil {
 		log.Fatalln(err)
 	}
 }
@@ -38,14 +40,16 @@ func ensureSecrets(hostnames []string) {
 func listenAndServe(port int, tls bool, hostnames []string) {
 	addr := ":" + strconv.Itoa(port)
 	log.Println("Serving current directory on port " + addr)
-	var err error
 	if tls {
-		ensureSecrets(hostnames)
-		err = http.ListenAndServeTLS(addr, security.CertFilename, security.KeyFilename, nil)
+		dir, err := execpath.Dir()
+		if err != nil {
+			log.Fatalln(err)
+		}
+		ensureSecrets(dir, hostnames)
+		keyPath := filepath.Join(dir, security.KeyFilename)
+		certPath := filepath.Join(dir, security.CertFilename)
+		log.Fatalln(http.ListenAndServeTLS(addr, certPath, keyPath, nil))
 	} else {
-		err = http.ListenAndServe(addr, nil)
-	}
-	if err != nil {
-		log.Fatalln(err)
+		log.Fatalln(http.ListenAndServe(addr, nil))
 	}
 }

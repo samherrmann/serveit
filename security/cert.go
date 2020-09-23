@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net"
-	"os"
 	"os/exec"
+	"path/filepath"
 	"strings"
 )
 
@@ -19,22 +19,25 @@ var CSRFilename = "serveit.csr"
 var ExtFilename = "serveit.ext"
 
 // EnsureCert creates a server X.509 certificate if it doesn't already exist.
-func EnsureCert(hostnames []string) error {
-	_, err := os.Stat(CertFilename)
-	if os.IsNotExist(err) {
-		if err := createCSR(); err != nil {
-			return err
-		}
-		if err = createExtFile(hostnames); err != nil {
-			return err
-		}
-		return CreateCert()
+func EnsureCert(dir string, hostnames []string) error {
+	exists, err := fileExists(dir, CertFilename)
+	if err != nil {
+		return err
 	}
-	return err
+	if !exists {
+		if err := createCSR(dir); err != nil {
+			return err
+		}
+		if err = createExtFile(dir, hostnames); err != nil {
+			return err
+		}
+		return CreateCert(dir)
+	}
+	return nil
 }
 
 // CreateCert creates a server X.509 certificate.
-func CreateCert() error {
+func CreateCert(dir string) error {
 	cmd := exec.Command(
 		"openssl", "x509",
 		"-req",
@@ -48,12 +51,13 @@ func CreateCert() error {
 		"-sha256",
 		"-extfile", ExtFilename,
 	)
+	cmd.Dir = dir
 	_, err := cmd.CombinedOutput()
 	return err
 }
 
 // createCSR creates a certificate signing request.
-func createCSR() error {
+func createCSR(dir string) error {
 	cmd := exec.Command(
 		"openssl", "req",
 		"-new",
@@ -61,12 +65,13 @@ func createCSR() error {
 		"-subj", "/C=CA/ST=Ontario/L=Ottawa/O=samherrmann/CN=serveit",
 		"-out", CSRFilename,
 	)
+	cmd.Dir = dir
 	_, err := cmd.CombinedOutput()
 	return err
 }
 
 // createExtFile creates a certificate extensions file.
-func createExtFile(hostnames []string) error {
+func createExtFile(dir string, hostnames []string) error {
 	dns := []string{}
 	ips := []string{}
 
@@ -92,5 +97,5 @@ func createExtFile(hostnames []string) error {
 	content += (strings.Join(dns, "\n") + "\n")
 	content += (strings.Join(ips, "\n") + "\n")
 
-	return ioutil.WriteFile(ExtFilename, []byte(content), 0644)
+	return ioutil.WriteFile(filepath.Join(dir, ExtFilename), []byte(content), 0644)
 }
