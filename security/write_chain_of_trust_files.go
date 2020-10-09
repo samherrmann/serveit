@@ -6,7 +6,8 @@ import (
 )
 
 // WriteChainOfTrustFiles writes all RSA private keys and x.509 certificates
-// defined in ChainOfTrust.
+// defined in ChainOfTrust. If the files defined in the chain of trust
+// already exist they are not overwritten and no error is returned.
 func WriteChainOfTrustFiles(chain *ChainOfTrust) error {
 	chain.leaf = true
 	invertedChain := []ChainOfTrust{}
