@@ -1,8 +1,1 @@
 dist
-serveit
-*.key
-*.crt
-*.csr
-*.srl
-*.pem
-*.ext
