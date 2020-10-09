@@ -29,11 +29,11 @@ func Parse(args []string) (*Config, error) {
 		"When true, servit automatically generates a self-signed certificate and serves "+
 			"files over HTTPS. Requires OpenSSL to be available on the system PATH.",
 	)
-	hostnames := flagSet.String(
-		"hostnames",
+	hosts := flagSet.String(
+		"hosts",
 		"localhost",
-		"A comma-separated list (no spaces) of hostnames to add to the server X.509 certificate. "+
-			"This flag is only applicable when the -tls flag is set.",
+		"A comma-separated list (no spaces) of DNS names and/or IP addresses to add to the "+
+			"server X.509 certificate. This flag is only applicable when the -tls flag is set.",
 	)
 
 	if err := flagSet.Parse(args); err != nil {
@@ -44,6 +44,6 @@ func Parse(args []string) (*Config, error) {
 		Port:         *port,
 		NotFoundFile: *notFoundFile,
 		TLS:          *tls,
-		Hostnames:    strings.Split(*hostnames, ","),
+		Hosts:        strings.Split(*hosts, ","),
 	}, nil
 }

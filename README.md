@@ -27,7 +27,7 @@ For single-page applications, this flag is typically set to `index.html`.
 
 ### Serving over HTTPS
 Serveit makes it very simple to serve files over HTTPS by automatically creating
-self-signed certificates using [openssl](https://www.openssl.org/):
+self-signed certificates:
 
 ```shell
 > serveit -tls
@@ -47,19 +47,19 @@ client device to have the browser trust the connection to serveit at
 #### More HTTPS options
 Create certificate for IP address:
 ```shell
-> serveit -tls -hostname 192.168.0.1
+> serveit -tls -hosts 192.168.0.1
 ```
 Create certificate for domain name:
 ```shell
-> serveit -tls -hostname example.com
+> serveit -tls -hosts example.com
 ```
 Create certificate for multiple domain names or IP addresses:
 ```shell
-> serveit -tls -hostname localhost,192.168.0.1,example.com
+> serveit -tls -hosts localhost,192.168.0.1,example.com
 ```
 Serve on default HTTPS port (443):
 ```shell
-> serveit -tls -hostname example.com -port 443
+> serveit -tls -hosts example.com -port 443
 ```
 
 ## Developing
