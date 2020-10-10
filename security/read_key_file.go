@@ -27,10 +27,12 @@ func ReadKeyFile(filename, password string) (*rsa.PrivateKey, error) {
 	} else {
 		blockBytes = block.Bytes
 	}
-
 	key, err := x509.ParsePKCS1PrivateKey(blockBytes)
 	if err != nil {
 		return nil, fmt.Errorf("cannot parse %v: %w", filename, err)
+	}
+	if err := key.Validate(); err != nil {
+		return nil, fmt.Errorf("key %v is invalid: %w", filename, err)
 	}
 	return key, nil
 }
