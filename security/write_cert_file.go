@@ -10,10 +10,10 @@ import (
 	"time"
 )
 
-// WriteCertFile creates a X.509v3 certificate and writes it to the file named
-// by the provided filename. Note that the file named by filename must not exist
-// or an error is returned. A file-exist error may be checked with
-// errors.Is(err, os.ErrExist).
+// WriteCertFile creates a X.509v3 certificate for the first level in the given
+// chain and writes it to the file named by the provided filename. Note that the
+// file named by filename must not exist or an error is returned. A file-exist
+// error may be checked with errors.Is(err, os.ErrExist).
 func WriteCertFile(chain *ChainOfTrust) error {
 	// Attempt to create and open file. Error if file already exists.
 	fileFlag := os.O_WRONLY | os.O_CREATE | os.O_EXCL
@@ -56,11 +56,11 @@ func WriteCertFile(chain *ChainOfTrust) error {
 	if err != nil {
 		return fmt.Errorf("failed to read RSA private key file %v: %w", chain.KeyFilename, err)
 	}
-	// Set the key and certificate template as the parent key and certificate
-	// template (default values).
+	// Use the key and certificate of the given chain level also as the parent key
+	// and certificate in case the given chain level doesn't have a parent.
 	parentKey := key
 	parentCertTemplate := certTemplate
-	// If this certificate definition does have a parent then set its key and certificate template.
+	// If the given chain level does have a parent then get its key and certificate template.
 	if chain.Parent != nil {
 		parentKey, err = ReadKeyFile(chain.Parent.KeyFilename, chain.Parent.KeyPassword)
 		if err != nil {
