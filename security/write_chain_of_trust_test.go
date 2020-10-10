@@ -1,12 +1,11 @@
 package security_test
 
 import (
+	"crypto/tls"
 	"errors"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"path/filepath"
-	"strings"
 	"testing"
 
 	"github.com/samherrmann/serveit/security"
@@ -24,11 +23,7 @@ func TestWriteChainOfTrust(t *testing.T) {
 		t.Error(err)
 	}
 
-	if err := verifyKeys(chain); err != nil {
-		t.Error(err)
-	}
-
-	if err := verifyCerts(chain); err != nil {
+	if err := verifyKeyPair(chain); err != nil {
 		t.Error(err)
 	}
 
@@ -38,6 +33,7 @@ func TestWriteChainOfTrust(t *testing.T) {
 	}
 }
 
+// newChainOfTrust returns a chain of trust.
 func newChainOfTrust(dir string, hosts []string) *security.ChainOfTrust {
 	return &security.ChainOfTrust{
 		Filename:    filepath.Join(dir, "serveit.crt"),
@@ -67,42 +63,13 @@ func newChainOfTrust(dir string, hosts []string) *security.ChainOfTrust {
 	}
 }
 
-func verifyKeys(chain *security.ChainOfTrust) error {
+// verifyKeyPair returns nil when the public and private key match for all
+// levels in the chain of trust.
+func verifyKeyPair(chain *security.ChainOfTrust) error {
 	return walkChain(chain, func(c *security.ChainOfTrust) error {
-		return verifyFileContent(
-			c.KeyFilename,
-			"-----BEGIN RSA PRIVATE KEY-----",
-			"-----END RSA PRIVATE KEY-----",
-		)
+		_, err := tls.LoadX509KeyPair(c.Filename, c.KeyFilename)
+		return err
 	})
-}
-
-func verifyCerts(chain *security.ChainOfTrust) error {
-	return walkChain(chain, func(c *security.ChainOfTrust) error {
-		return verifyFileContent(
-			c.Filename,
-			"-----BEGIN CERTIFICATE-----",
-			"-----END CERTIFICATE-----",
-		)
-	})
-}
-
-// verifyFileContent verifies that the file content start and end with the
-// provided prefix and postfix respectively.
-func verifyFileContent(filename, prefix, suffix string) error {
-	// Read content from file.
-	content, err := ioutil.ReadFile(filename)
-	if err != nil {
-		return fmt.Errorf("cannot read %v: %w", filename, err)
-	}
-
-	// Verify file content.
-	contentStr := string(content)
-	if !strings.HasPrefix(contentStr, prefix) &&
-		!strings.HasSuffix(contentStr, suffix) {
-		return fmt.Errorf("%v does not have expected content, got %v", filename, contentStr)
-	}
-	return nil
 }
 
 // removeAllFiles removes all key and certificate files in the chain.
@@ -125,6 +92,7 @@ func removeAllFiles(chain *security.ChainOfTrust) error {
 	return walkChain(chain, remove)
 }
 
+// walkChain walks through the chain of trust
 func walkChain(cert *security.ChainOfTrust, fn func(c *security.ChainOfTrust) error) error {
 	if err := fn(cert); err != nil {
 		return err
