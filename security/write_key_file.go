@@ -10,10 +10,10 @@ import (
 )
 
 // WriteKeyFile creates a RSA private key and writes it to the file named by the
-// provided filename as a PEM block. If the password is not an empty string then
-// the PEM block is encrypted using the password. Note that the file named by
-// filename must not exist or an error is returned. A file-exist error may be
-// checked with errors.Is(err, os.ErrExist).
+// provided filename. The key is written as a PEM block. If the password is not
+// an empty string then the PEM block is encrypted using the password. Note that
+// the file named by filename must not exist or an error is returned. A
+// file-exist error may be checked with errors.Is(err, os.ErrExist).
 func WriteKeyFile(filename, password string) error {
 	// Attempt to create and open file. Error if file already exists.
 	fileFlag := os.O_WRONLY | os.O_CREATE | os.O_EXCL
