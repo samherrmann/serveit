@@ -1,5 +1,5 @@
 # serveit
-A very simple HTTP file server
+A simple HTTP file server
 
 ## Installation
 
@@ -26,7 +26,7 @@ A very simple HTTP file server
 For single-page applications, this flag is typically set to `index.html`.
 
 ### Serving over HTTPS
-Serveit makes it very simple to serve files over HTTPS by automatically creating
+Serveit makes it simple to serve files over HTTPS by automatically creating
 self-signed certificates:
 
 ```shell
