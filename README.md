@@ -1,5 +1,5 @@
 # serveit
-A simple HTTP file server
+A simple HTTP file server in a single executable file.
 
 ## Installation
 
