@@ -11,13 +11,14 @@ import (
 
 // WriteKeyFile creates a RSA private key and writes it to the file named by the
 // provided filename. The key is written as a PEM block. If the password is not
-// an empty string then the PEM block is encrypted using the password. Note that
-// the file named by filename must not exist or an error is returned. A
-// file-exist error may be checked with errors.Is(err, os.ErrExist).
-func WriteKeyFile(filename, password string) error {
+// an empty string then the PEM block is encrypted using the password. The file
+// named by filename must not exist or an error is returned. A file-exist error
+// may be checked with errors.Is(err, os.ErrExist). The file is created with the
+// given perm mode.
+func WriteKeyFile(filename, password string, perm os.FileMode) error {
 	// Attempt to create and open file. Error if file already exists.
 	fileFlag := os.O_WRONLY | os.O_CREATE | os.O_EXCL
-	file, err := os.OpenFile(filename, fileFlag, 0644)
+	file, err := os.OpenFile(filename, fileFlag, perm)
 	if err != nil {
 		return fmt.Errorf("failed to open %v: %w", filename, err)
 	}

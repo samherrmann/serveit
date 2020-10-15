@@ -13,11 +13,12 @@ import (
 // WriteCertFile creates a X.509v3 certificate for the first level in the given
 // chain and writes it to the file named by the provided filename. Note that the
 // file named by filename must not exist or an error is returned. A file-exist
-// error may be checked with errors.Is(err, os.ErrExist).
-func WriteCertFile(chain *ChainOfTrust) error {
+// error may be checked with errors.Is(err, os.ErrExist). The file is created
+// with the given perm mode.
+func WriteCertFile(chain *ChainOfTrust, perm os.FileMode) error {
 	// Attempt to create and open file. Error if file already exists.
 	fileFlag := os.O_WRONLY | os.O_CREATE | os.O_EXCL
-	file, err := os.OpenFile(chain.Filename, fileFlag, 0644)
+	file, err := os.OpenFile(chain.Filename, fileFlag, perm)
 	if err != nil {
 		return fmt.Errorf("failed to open %v: %w", chain.Filename, err)
 	}

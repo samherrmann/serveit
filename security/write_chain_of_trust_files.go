@@ -8,7 +8,7 @@ import (
 // WriteChainOfTrustFiles writes all RSA private keys and x.509 certificates
 // defined in ChainOfTrust. If the files defined in the chain of trust
 // already exist they are not overwritten and no error is returned.
-func WriteChainOfTrustFiles(chain *ChainOfTrust) error {
+func WriteChainOfTrustFiles(chain *ChainOfTrust, perm os.FileMode) error {
 	chain.leaf = true
 	invertedChain := []ChainOfTrust{}
 	var createChain func(*ChainOfTrust)
@@ -27,10 +27,10 @@ func WriteChainOfTrustFiles(chain *ChainOfTrust) error {
 	}
 
 	for _, c := range invertedChain {
-		if err := WriteKeyFile(c.KeyFilename, c.KeyPassword); isError(err) {
+		if err := WriteKeyFile(c.KeyFilename, c.KeyPassword, perm); isError(err) {
 			return err
 		}
-		if err := WriteCertFile(&c); isError(err) {
+		if err := WriteCertFile(&c, perm); isError(err) {
 			return err
 		}
 	}

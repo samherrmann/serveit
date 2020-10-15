@@ -19,7 +19,7 @@ func TestWriteChainOfTrust(t *testing.T) {
 		t.Error(err)
 	}
 
-	if err := security.WriteChainOfTrustFiles(chain); err != nil {
+	if err := security.WriteChainOfTrustFiles(chain, 0600); err != nil {
 		t.Error(err)
 	}
 

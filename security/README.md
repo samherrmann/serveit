@@ -44,7 +44,7 @@ func main() {
 	}
 
 	// 2. Create the RSA private key and x.509 certificate files.
-	if err := security.WriteChainOfTrustFiles(chain); err != nil {
+	if err := security.WriteChainOfTrustFiles(chain, 0600); err != nil {
 		log.Fatalln(err)
 	}
 }
