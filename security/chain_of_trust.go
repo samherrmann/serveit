@@ -19,7 +19,9 @@ type ChainOfTrust struct {
 	Filename string
 	// KeyFilename is the filename of the file containing the RSA private key.
 	KeyFilename string
-	// KeyPassword is the password used to encrypt the RSA private key.
+	// KeyPassword is the password used to encrypt the RSA private key PEM block.
+	// If no password is provided (i.e. empty string) then the PEM block is not
+	// encrypted.
 	KeyPassword string
 	// leaf defines wether this level of the chain of trust is the leaf.
 	leaf bool
