@@ -18,7 +18,7 @@ func ensureSecrets(hosts []string) (KeyFilename, CertFilename) {
 	if err != nil {
 		log.Fatalln(err)
 	}
-	chain := chainOfTrust(dir, hosts)
+	chain := newChainOfTrust(dir, hosts)
 	if err := security.WriteChainOfTrustFiles(chain, 0600); err != nil {
 		log.Fatalln(err)
 	}

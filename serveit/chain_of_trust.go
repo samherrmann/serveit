@@ -6,7 +6,7 @@ import (
 	"github.com/samherrmann/serveit/security"
 )
 
-func chainOfTrust(dir string, hosts []string) *security.ChainOfTrust {
+func newChainOfTrust(dir string, hosts []string) *security.ChainOfTrust {
 	return &security.ChainOfTrust{
 		Filename:    filepath.Join(dir, "serveit.crt"),
 		KeyFilename: filepath.Join(dir, "serveit.key"),
