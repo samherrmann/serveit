@@ -99,7 +99,7 @@ func WriteCertFile(chain *ChainOfTrust, perm os.FileMode) error {
 	return nil
 }
 
-// keyUsage returns the set of actions that are valid of a leaf or non-leaf key.
+// keyUsage returns the set of actions that are valid for a leaf or non-leaf key.
 func keyUsage(leaf bool) x509.KeyUsage {
 	if leaf {
 		return x509.KeyUsageDigitalSignature
