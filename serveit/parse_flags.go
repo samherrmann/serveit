@@ -8,7 +8,7 @@ import (
 )
 
 func parseFlags() *flag.Config {
-	config, err := flag.Parse(os.Args[1:])
+	config, err := flag.Parse(os.Args)
 	if err != nil {
 		log.Println(err)
 		os.Exit(2)

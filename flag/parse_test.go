@@ -27,55 +27,61 @@ func TestParse(t *testing.T) {
 				err:    nil,
 			},
 		}, {
-			args: []string{"-port", "3000"},
-			want: &Want{
-				config: &flag.Config{Port: 3000, NotFoundFile: "", TLS: false, Hosts: []string{"localhost"}},
-				err:    nil,
-			},
-		}, {
-			args: []string{"-port", "foo"},
-			want: &Want{
-				config: nil,
-				err:    errors.New(""),
-			},
-		}, {
-			args: []string{"-not-found-file"},
-			want: &Want{
-				config: nil,
-				err:    errors.New(""),
-			},
-		}, {
-			args: []string{"-not-found-file", "404.html"},
-			want: &Want{
-				config: &flag.Config{Port: 8080, NotFoundFile: "404.html", TLS: false, Hosts: []string{"localhost"}},
-				err:    nil,
-			},
-		}, {
-			args: []string{"-not-found-file", "foo"},
-			want: &Want{
-				config: &flag.Config{Port: 8080, NotFoundFile: "foo", TLS: false, Hosts: []string{"localhost"}},
-				err:    nil,
-			},
-		}, {
-			args: []string{"-port", "3000", "-not-found-file", "index.html", "-tls"},
-			want: &Want{
-				config: &flag.Config{Port: 3000, NotFoundFile: "index.html", TLS: true, Hosts: []string{"localhost"}},
-				err:    nil,
-			},
-		}, {
-			args: []string{"-tls"},
-			want: &Want{
-				config: &flag.Config{Port: 8080, NotFoundFile: "", TLS: true, Hosts: []string{"localhost"}},
-				err:    nil,
-			},
-		}, {
-			args: []string{"-tls=false"},
+			args: []string{"program-name"},
 			want: &Want{
 				config: &flag.Config{Port: 8080, NotFoundFile: "", TLS: false, Hosts: []string{"localhost"}},
 				err:    nil,
 			},
 		}, {
-			args: []string{"-tls", "false"},
+			args: []string{"program-name", "-port", "3000"},
+			want: &Want{
+				config: &flag.Config{Port: 3000, NotFoundFile: "", TLS: false, Hosts: []string{"localhost"}},
+				err:    nil,
+			},
+		}, {
+			args: []string{"program-name", "-port", "foo"},
+			want: &Want{
+				config: nil,
+				err:    errors.New(""),
+			},
+		}, {
+			args: []string{"program-name", "-not-found-file"},
+			want: &Want{
+				config: nil,
+				err:    errors.New(""),
+			},
+		}, {
+			args: []string{"program-name", "-not-found-file", "404.html"},
+			want: &Want{
+				config: &flag.Config{Port: 8080, NotFoundFile: "404.html", TLS: false, Hosts: []string{"localhost"}},
+				err:    nil,
+			},
+		}, {
+			args: []string{"program-name", "-not-found-file", "foo"},
+			want: &Want{
+				config: &flag.Config{Port: 8080, NotFoundFile: "foo", TLS: false, Hosts: []string{"localhost"}},
+				err:    nil,
+			},
+		}, {
+			args: []string{"program-name", "-port", "3000", "-not-found-file", "index.html", "-tls"},
+			want: &Want{
+				config: &flag.Config{Port: 3000, NotFoundFile: "index.html", TLS: true, Hosts: []string{"localhost"}},
+				err:    nil,
+			},
+		}, {
+			args: []string{"program-name", "-tls"},
+			want: &Want{
+				config: &flag.Config{Port: 8080, NotFoundFile: "", TLS: true, Hosts: []string{"localhost"}},
+				err:    nil,
+			},
+		}, {
+			args: []string{"program-name", "-tls=false"},
+			want: &Want{
+				config: &flag.Config{Port: 8080, NotFoundFile: "", TLS: false, Hosts: []string{"localhost"}},
+				err:    nil,
+			},
+		}, {
+			args: []string{"program-name", "-tls", "false"},
 			want: &Want{
 				// Note that setting boolean flag values explicitly needs to be done in
 				// the form of "-flag=value", the form "-flag value" does not work.
@@ -83,25 +89,25 @@ func TestParse(t *testing.T) {
 				err:    nil,
 			},
 		}, {
-			args: []string{"-hosts", "example.com"},
+			args: []string{"program-name", "-hosts", "example.com"},
 			want: &Want{
 				config: &flag.Config{Port: 8080, NotFoundFile: "", TLS: false, Hosts: []string{"example.com"}},
 				err:    nil,
 			},
 		}, {
-			args: []string{"-hosts", "localhost,example.com"},
+			args: []string{"program-name", "-hosts", "localhost,example.com"},
 			want: &Want{
 				config: &flag.Config{Port: 8080, NotFoundFile: "", TLS: false, Hosts: []string{"localhost", "example.com"}},
 				err:    nil,
 			},
 		}, {
-			args: []string{"-hosts", "localhost,example.com,192.168.0.1"},
+			args: []string{"program-name", "-hosts", "localhost,example.com,192.168.0.1"},
 			want: &Want{
 				config: &flag.Config{Port: 8080, NotFoundFile: "", TLS: false, Hosts: []string{"localhost", "example.com", "192.168.0.1"}},
 				err:    nil,
 			},
 		}, {
-			args: []string{"-hosts"},
+			args: []string{"program-name", "-hosts"},
 			want: &Want{
 				config: nil,
 				err:    errors.New(""),

@@ -2,16 +2,25 @@ package flag
 
 import (
 	"flag"
-	"os"
 	"strings"
 )
 
-// Parse returns a Config object containing the values of the commnad-line
-// flags. The provided arguments typically originate from os.Args[1:].
+// Parse parses flag definitions from the argument list, where the first element
+// is expected to be the program name. A Config object is returned containing
+// the flag values. The pgiven argument list usually originates from os.Args.
 func Parse(args []string) (*Config, error) {
+	programName := ""
+	if len(args) > 0 {
+		programName = args[0]
+	}
+	if len(args) > 1 {
+		args = args[1:]
+	} else {
+		args = []string{}
+	}
 	// A custom flag set is used instead of the static one built into Go's flag
 	// package in order to make this function testable.
-	flagSet := flag.NewFlagSet(os.Args[0], flag.ContinueOnError)
+	flagSet := flag.NewFlagSet(programName, flag.ContinueOnError)
 	port := flagSet.Int(
 		"port",
 		8080,
