@@ -4,13 +4,13 @@ import (
 	"crypto/x509"
 	"encoding/pem"
 	"fmt"
-	"io/ioutil"
+	"os"
 )
 
 // ReadCertFile returns the x.509v3 certificate from the file named by the
 // provided filename.
 func ReadCertFile(filename string) (*x509.Certificate, error) {
-	bytes, err := ioutil.ReadFile(filename)
+	bytes, err := os.ReadFile(filename)
 	if err != nil {
 		return nil, fmt.Errorf("cannot read %v: %w", filename, err)
 	}

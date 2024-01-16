@@ -50,6 +50,7 @@ func newPrivateKeyPEMBlock(key *rsa.PrivateKey, password string) (*pem.Block, er
 			Bytes: x509.MarshalPKCS1PrivateKey(key),
 		}, nil
 	}
+	//lint:ignore SA1019 https://github.com/samherrmann/serveit/issues/2
 	return x509.EncryptPEMBlock(
 		rand.Reader,
 		"RSA PRIVATE KEY",

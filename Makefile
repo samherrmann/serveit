@@ -8,11 +8,14 @@ zip = (cd dist && zip -r $$GOOS-$$GOARCH.zip $$GOOS-$$GOARCH/*)
 build:
 	mkdir -p dist && go build -o dist ./serveit
 
-build.all: 
+build.all:
 	export GOOS=linux; export GOARCH=386; $(gobuild) && $(tar)
 	export GOOS=linux; export GOARCH=amd64; $(gobuild) && $(tar)
 	export GOOS=windows; export GOARCH=amd64; $(gobuild) && $(zip)
 	export GOOS=windows; export GOARCH=386; $(gobuild) && $(zip)
+
+lint:
+	staticcheck -checks=all ./...
 
 test:
 	CGO_ENABLED=1 go test ./... -race -cover
@@ -21,5 +24,5 @@ clean:
 	rm -rf dist
 
 # Resources:
-# List of available target OSs and architectures: 
+# List of available target OSs and architectures:
 # https://golang.org/doc/install/source#environment

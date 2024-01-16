@@ -1,14 +1,10 @@
-  
+
 name: Go
 
 on:
   push:
-    branches:
-      - main
-    tags:
-      - 'v*.*.*'
   pull_request:
-    branches: 
+    branches:
       - main
 
 jobs:
@@ -28,6 +24,12 @@ jobs:
 
     - name: Get dependencies
       run: go get -v -t -d ./...
+
+    - name: Install staticcheck
+      run: go install honnef.co/go/tools/cmd/staticcheck@2023.1.6
+
+    - name: Lint
+      run: staticcheck -checks=all ./...
 
     - name: Test
       run: make test

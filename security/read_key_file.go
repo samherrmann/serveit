@@ -5,14 +5,14 @@ import (
 	"crypto/x509"
 	"encoding/pem"
 	"fmt"
-	"io/ioutil"
+	"os"
 )
 
 // ReadKeyFile returns the RSA private key from the file named by the provided
 // filename. If the password is not an empty string then it's used to decrypt
 // the PEM block.
 func ReadKeyFile(filename, password string) (*rsa.PrivateKey, error) {
-	bytes, err := ioutil.ReadFile(filename)
+	bytes, err := os.ReadFile(filename)
 	if err != nil {
 		return nil, fmt.Errorf("cannot read %v: %w", filename, err)
 	}
@@ -20,6 +20,7 @@ func ReadKeyFile(filename, password string) (*rsa.PrivateKey, error) {
 
 	var blockBytes []byte
 	if password != "" {
+		//lint:ignore SA1019 https://github.com/samherrmann/serveit/issues/2
 		blockBytes, err = x509.DecryptPEMBlock(block, []byte(password))
 		if err != nil {
 			return nil, fmt.Errorf("cannot decrypt %v: %w", filename, err)
