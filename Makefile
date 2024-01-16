@@ -1,4 +1,6 @@
 
+# Disable CGO since we have no Go code that calls into C.
+export CGO_ENABLED := 0
 gobuild = mkdir -p dist/$$GOOS-$$GOARCH && go build -o dist/$$GOOS-$$GOARCH ./serveit
 tar = (cd dist && tar -czvf $$GOOS-$$GOARCH.tar.gz $$GOOS-$$GOARCH/*)
 zip = (cd dist && zip -r $$GOOS-$$GOARCH.zip $$GOOS-$$GOARCH/*)
@@ -13,7 +15,7 @@ build.all:
 	export GOOS=windows; export GOARCH=386; $(gobuild) && $(zip)
 
 test:
-	go test ./... -race -cover
+	CGO_ENABLED=1 go test ./... -race -cover
 
 clean:
 	rm -rf dist
