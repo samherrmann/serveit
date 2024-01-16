@@ -1,18 +1,22 @@
 package main
 
 import (
-	"log"
+	"fmt"
 	"net/http"
 	"strconv"
 )
 
-func listenAndServe(port int, tls bool, hosts []string) {
+func listenAndServe(port int, tls bool, hosts []string) error {
 	addr := ":" + strconv.Itoa(port)
-	log.Println("Serving current directory on port " + addr)
+	fmt.Println("Serving current directory on port " + addr)
+
 	if tls {
-		keyFilename, certFilename := ensureSecrets(hosts)
-		log.Fatalln(http.ListenAndServeTLS(addr, certFilename, keyFilename, nil))
-	} else {
-		log.Fatalln(http.ListenAndServe(addr, nil))
+		keyFilename, certFilename, err := ensureSecrets(hosts)
+		if err != nil {
+			return err
+		}
+		return http.ListenAndServeTLS(addr, certFilename, keyFilename, nil)
 	}
+
+	return http.ListenAndServe(addr, nil)
 }

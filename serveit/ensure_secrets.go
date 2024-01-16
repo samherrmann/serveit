@@ -1,8 +1,6 @@
 package main
 
 import (
-	"log"
-
 	"github.com/samherrmann/serveit/execpath"
 	"github.com/samherrmann/serveit/security"
 )
@@ -13,14 +11,14 @@ type KeyFilename = string
 // CertFilename is the filename of the certificate.
 type CertFilename = string
 
-func ensureSecrets(hosts []string) (KeyFilename, CertFilename) {
+func ensureSecrets(hosts []string) (KeyFilename, CertFilename, error) {
 	dir, err := execpath.Dir()
 	if err != nil {
-		log.Fatalln(err)
+		return "", "", err
 	}
 	chain := newChainOfTrust(dir, hosts)
 	if err := security.WriteChainOfTrustFiles(chain, 0600); err != nil {
-		log.Fatalln(err)
+		return "", "", err
 	}
-	return chain.KeyFilename, chain.Filename
+	return chain.KeyFilename, chain.Filename, nil
 }
