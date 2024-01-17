@@ -9,19 +9,19 @@ A simple HTTP file server in a single executable file.
 
 ## Usage
 
-```shell
-> cd root/of/project/you/want/to/serve
-> serveit
+```sh
+cd root/of/project/you/want/to/serve
+serveit
 ```
 
 ### Serving on custom port
-```shell
-> serveit -port=7070
+```sh
+serveit -port=7070
 ```
 
 ### Serving custom file when requested resource cannot be found
-```shell
-> serveit -not-found-file=404.html
+```sh
+serveit -not-found-file=404.html
 ```
 For single-page applications, this flag is typically set to `index.html`.
 
@@ -29,8 +29,8 @@ For single-page applications, this flag is typically set to `index.html`.
 Serveit makes it simple to serve files over HTTPS by automatically creating
 self-signed certificates:
 
-```shell
-> serveit -tls
+```sh
+serveit -tls
 ```
 This command automatically generates the following files if they don't already exist:
 |                       |                                              |
@@ -46,20 +46,20 @@ client device to have the browser trust the connection to serveit at
 
 #### More HTTPS options
 Create certificate for IP address:
-```shell
-> serveit -tls -hosts 192.168.0.1
+```sh
+serveit -tls -hosts 192.168.0.1
 ```
 Create certificate for domain name:
-```shell
-> serveit -tls -hosts example.com
+```sh
+serveit -tls -hosts example.com
 ```
 Create certificate for multiple domain names or IP addresses:
-```shell
-> serveit -tls -hosts localhost,192.168.0.1,example.com
+```sh
+serveit -tls -hosts localhost,192.168.0.1,example.com
 ```
 Serve on default HTTPS port (443):
-```shell
-> serveit -tls -hosts example.com -port 443
+```sh
+serveit -tls -hosts example.com -port 443
 ```
 
 ## Developing
@@ -74,13 +74,13 @@ Serve on default HTTPS port (443):
 ### Build
 
 ```sh
-> make build
+make build
 ```
 
 ### Test
 
 ```sh
-> make test
+make test
 ```
 
 
