@@ -3,7 +3,8 @@ A simple HTTP file server in a single executable file.
 
 ## Installation
 
-1. Download the binary for your plaform from [here](https://github.com/samherrmann/serveit/releases/).
+1. Download the binary for your platform from
+   [here](https://github.com/samherrmann/serveit/releases/).
 2. Move the binary to an installation directory of your choice.
 3. Add the installation directory to your environment path.
 
